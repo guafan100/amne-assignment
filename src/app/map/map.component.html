@@ -1,0 +1,47 @@
+<div class="container-fluid input">
+  <div fxLayout="column">
+  	<div fxFlex >
+      <button mat-icon-button class="mat-primary">Careful</button>
+      <button mat-fab >Careful</button>
+    </div>
+
+    <div fxFlex fxLayout="row" fxLayoutGap="10px" fxLayoutAlign.gt-md="space-around">
+      <div fxFlex="5">
+      </div>
+      <div fxFlex >
+        <h3>Panel</h3>
+        <form novalidate (ngSubmit)="onSubmit()" >
+        	<mat-input-container class="half-width" >
+              <input matInput name="firstname" placeholder="First Name" type="text" required>
+              <mat-hint>
+              </mat-hint>
+            </mat-input-container>
+            <mat-input-container class="half-width">
+              <input matInput name="lastname" placeholder="First Name" type="text" required>
+              <mat-hint>
+              </mat-hint>
+            </mat-input-container>
+            <button type="submit" mat-raised-button class="background-primary text-floral-white" >Submit</button>
+        </form>
+        <agm-map [latitude]="lat" [longitude]="lng">
+  			<agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+		</agm-map>
+  	  </div>
+  	  <div fxFlex="70" >
+  	  	<h3>Result<button mat-mini-fab class="text-floral-white button-for-badge" [disabled]="true">12</button></h3>
+
+
+	  </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!--         <div class="row">
+          <div class="col-md-12">
+            <ShowAlert alert={this.state.alert}/>
+          </div>
+        </div> -->

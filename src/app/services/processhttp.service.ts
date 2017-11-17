@@ -3,9 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Http, Response } from '@angular/http';
 
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/map';
-
 @Injectable()
 export class ProcesshttpService {
 
@@ -16,6 +13,5 @@ export class ProcesshttpService {
     console.log(body);
     return body || { };
   }
-
 
 }

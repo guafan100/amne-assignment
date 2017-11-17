@@ -20,7 +20,7 @@ import { MapComponent } from './map/map.component';
 
 import { ProcesshttpService } from './services/processhttp.service';
 
-
+import { DataService } from './services/data.service';
 
 
 @NgModule({
@@ -46,7 +46,8 @@ import { ProcesshttpService } from './services/processhttp.service';
     })
   ],
   providers: [
-    ProcesshttpService
+    ProcesshttpService,
+    DataService
   ],
   bootstrap: [AppComponent]
 })

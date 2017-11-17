@@ -10,22 +10,32 @@
       </div>
       <div fxFlex >
         <h3>Panel</h3>
-        <form novalidate (ngSubmit)="onSubmit()" >
-        	<mat-input-container class="half-width" >
-              <input matInput name="firstname" placeholder="First Name" type="text" required>
+        <p>{{addrForm.value | json}}{{ addrForm.status | json }}</p>
+        <form novalidate [formGroup]="addrForm" (ngSubmit)="onSubmit()" >
+        	<mat-input-container class="half-width" 
+            dividerColor="{{formErrors.addrA ? 'warn' : 'primary'}}">
+              <input matInput formControlName="addrA" placeholder="First Address" type="text" required>
               <mat-hint>
+                <span [hidden]="!(formErrors.addrA)">
+                  {{formErrors.addrA}}</span>
               </mat-hint>
             </mat-input-container>
-            <mat-input-container class="half-width">
-              <input matInput name="lastname" placeholder="First Name" type="text" required>
+
+            <mat-input-container class="half-width"
+              dividerColor="{{formErrors.addrB ? 'warn' : 'primary'}}">
+              <input matInput formControlName="addrB" placeholder="Second Address" type="text" required>
               <mat-hint>
+                <span [hidden]="!(formErrors.addrB)">
+                  {{formErrors.addrB}}</span>
               </mat-hint>
             </mat-input-container>
-            <button type="submit" mat-raised-button class="background-primary text-floral-white" >Submit</button>
+            <button type="submit" mat-raised-button class="background-primary text-floral-white" [disabled]="addrForm.invalid">Submit</button>
         </form>
+        <p></p>
+        <p></p>
         <agm-map [latitude]="lat" [longitude]="lng">
-  			<agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
-		</agm-map>
+  			 <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+		    </agm-map>
   	  </div>
   	  <div fxFlex="70" >
   	  	<h3>Result<button mat-mini-fab class="text-floral-white button-for-badge" [disabled]="true">12</button></h3>

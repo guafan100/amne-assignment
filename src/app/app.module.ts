@@ -4,8 +4,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-
-
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule, MatFormFieldModule,
   MatInputModule, MatRadioModule,
@@ -19,6 +17,8 @@ import 'hammerjs';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { MapComponent } from './map/map.component';
+
+import { ProcesshttpService } from './services/processhttp.service';
 
 
 
@@ -45,7 +45,9 @@ import { MapComponent } from './map/map.component';
       apiKey: 'AIzaSyBwyhyXYztX3BZsVpqmGIYMcIOak-x5-js'
     })
   ],
-  providers: [],
+  providers: [
+    ProcesshttpService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

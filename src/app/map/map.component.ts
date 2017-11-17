@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ProcesshttpService } from '../services/processhttp.service';
+import { Http, Response } from '@angular/http';
+
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/map';
 
 @Component({
   selector: 'app-map',
@@ -11,9 +16,11 @@ export class MapComponent implements OnInit {
 	
   lat: number = 30.307182;
   lng: number = -97.755996;
+  isValidAddr=true;
+
   requestUrl : string = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?radius=500&type=real_estate_agency&keyword=cruise&key=AIzaSyBwyhyXYztX3BZsVpqmGIYMcIOak-x5-js&location=-33.8670522,151.1957362';
 
-  goeUrl: string = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBwyhyXYztX3BZsVpqmGIYMcIOak-x5-js&address=1600+Amphitheatre+Parkway';
+  geoUrl: string = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBwyhyXYztX3BZsVpqmGIYMcIOak-x5-js&address=';
 
   addrForm: FormGroup;
 
@@ -31,7 +38,9 @@ export class MapComponent implements OnInit {
     }
   };
   
-  constructor(private fb: FormBuilder) { 
+  constructor(private fb: FormBuilder,
+  		private processhttpservice: ProcesshttpService,
+  		private http: Http) { 
   	this.createForm();
   }
 
@@ -66,17 +75,35 @@ export class MapComponent implements OnInit {
     }
   }
 
+
   onSubmit() {
   	let addressA = this.addrForm.value.addrA;
   	let addressB = this.addrForm.value.addrB;
-  	console.log(addressA+ addressB);
-  	
+  	let dataA;
+  	let dataB;
 
+  	//use observable to get the location of the two input addresses
+
+	this.http.get(this.geoUrl+addressA)
+		.map(res => { return this.processhttpservice.extractData(res);})
+		.subscribe(data => { if(data.status === 'OK' ) {		
+			dataA = data.results[0].geometry.location;
+			console.log(dataA);
+			this.http.get(this.geoUrl+addressB)
+			.map(res => { return this.processhttpservice.extractData(res);})
+			.subscribe(data => { if(data.status === 'OK') {
+				dataB = data.results[0].geometry.location;
+
+
+
+			}});
+		}});
 
 	this.addrForm.reset({
 		addrA: '',
 		addrB: ''
 	});
   }
+
 
 }

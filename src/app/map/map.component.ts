@@ -22,33 +22,6 @@ export class MapComponent implements OnInit {
   lat: number = 30.307182;
   lng: number = -97.755996;
 
-  displayedColumn = ['position', 'name', 'weight', 'symbol'];
-    ELEMENT_DATA = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-  {position: 11, name: 'Sodium', weight: 22.9897, symbol: 'Na'},
-  {position: 12, name: 'Magnesium', weight: 24.305, symbol: 'Mg'},
-  {position: 13, name: 'Aluminum', weight: 26.9815, symbol: 'Al'},
-  {position: 14, name: 'Silicon', weight: 28.0855, symbol: 'Si'},
-  {position: 15, name: 'Phosphorus', weight: 30.9738, symbol: 'P'},
-  {position: 16, name: 'Sulfur', weight: 32.065, symbol: 'S'},
-  {position: 17, name: 'Chlorine', weight: 35.453, symbol: 'Cl'},
-  {position: 18, name: 'Argon', weight: 39.948, symbol: 'Ar'},
-  {position: 19, name: 'Potassium', weight: 39.0983, symbol: 'K'},
-  {position: 20, name: 'Calcium', weight: 40.078, symbol: 'Ca'},
-];
-  dataSources = new MatTableDataSource(this.ELEMENT_DATA);
-
-
-
   //indicating whether the status === 'OK'
   isValidAddr = true;
 
@@ -114,45 +87,83 @@ export class MapComponent implements OnInit {
     }
   }
 
+  helper(data, dataA, listA) {
+    if(!data || !data.next_page_token) return;
+    else {
+       let tmpdata;
+       console.log(data);
+       this.dataservice.getFollowAgencies(dataA, data.next_page_token)
+        .subscribe(data => {
+          listA.push(data); 
+          if(data.next_page_token) {
+            this.dataservice.getFollowAgencies(dataA, data.next_page_token)
+              .subscribe(data => {
+                listA.push(data);
+              });          
+          }
+        });       
+    }
+  }
+
   onSubmit() {
+    let finishedA = false;
+    let finishedB = false;
   	this.isValidAddr = true;
   	let addressA = this.addrForm.value.addrA;
   	let addressB = this.addrForm.value.addrB;
+    let listA = [];
+    let listB = [];
+    let dataA;
+    let dataB;
   	//use observable to get the location of the two input addresses
 
-	this.dataservice.getLoc(addressA)
-		.subscribe(data => { if(data.status === 'OK' ) {		
-			let dataA = data.results[0].geometry.location;
-			console.log(dataA);
-			this.dataservice.getLoc(addressB)
-			.subscribe(data => { if(data.status === 'OK') {
-				let dataB = data.results[0].geometry.location;
-				console.log(dataB);
+    this.dataservice.getLoc(addressA)
+      .subscribe(data => {if(data.status === 'OK'){
+        dataA = data.results[0].geometry.location;  
 
-				this.dataservice.getAgencies(dataA)
-					.subscribe(data => { 
+        this.dataservice.getAgencies(dataA)
+          .subscribe(data => {
+            console.log(dataA);
+            listA.push(data);
+            this.helper(data, dataA, listA);
+          });
+
+        }else {this.isValidAddr=false;}});
+
+//    this.dataservice.getLoc(addressB)
+//      .subscribe(data => {if(data.status === 'OK'){
+//        dataB = data.results[0].geometry.location;  
+
+//        this.dataservice.getAgencies(dataB)
+//          .subscribe(data => {
+//            console.log(dataB);
+//            listA.push(data);
+//            this.helper(data, dataB, listB);
+//          });
+
+//        }else {this.isValidAddr=false;}});
 
 
-					//get the agencies that are less than 10 miles from B
-					this.agencies = this.agencyservice.getAgencies(data, dataA, dataB);
-					this.dataSource = new MatTableDataSource(this.agencies);
+    setTimeout(function(){console.log(listA)}, 3000);
 
 
-					console.log(this.agencies);
 
-				}); 
-			}else {this.isValidAddr = false;}});
-		}else {this.isValidAddr = false;}});
+  	if(!this.isValidAddr) {
+  		this.openDialog();
+  	}
 
-	if(!this.isValidAddr) {
-		this.openDialog();
-	}
-
-	this.addrForm.reset({
-		addrA: '',
-		addrB: ''
-	});
+  	this.addrForm.reset({
+  		addrA: '',
+  		addrB: ''
+  	});
 	
+  }
+  function(listA, listB){
+    console.log(listA);
+    //console.log(listB);    
+    if(!this.isValidAddr) {
+      this.openDialog();
+    }
   }
 
   openDialog() {

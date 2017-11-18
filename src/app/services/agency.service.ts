@@ -5,29 +5,30 @@ export class AgencyService {
 
   constructor() { }
 
-  getAgencies(data, locA, locB){
+  getAgencies(listA, listB, locA, locB){
   	var agencies = [];
-
-  	console.log("test: "+ this.getDistance(38.898556, -77.037852, 38.897147, -77.043934));
 
   	let latA = Number(locA.lat);
   	let lngA = Number(locA.lng);
   	let latB = Number(locB.lat);
   	let lngB = Number(locB.lng); 
-  	for(let point of data.results) {
-  		let currLat = point.geometry.location.lat;
-  		let currLng = point.geometry.location.lng;
-  		let distB = this.getDistance(currLat, currLng, latB, lngB);
-  		if(distB < 10) {
-  			let distA = this.getDistance(currLat, currLng, latA, lngA);
-  			agencies.push({
-  				name: point.name,
-  				distanceA: distA,
-  				distanceB: distB,
-  				sum: (distA+distB)
-  			});
-  		}
-  	}
+
+    // get results in listA and listB
+    var agenciesA = [];
+    var agenciesB = [];
+
+    this.getResult(listA, latA, lngA, latB, lngB, agenciesA);
+    this.getResult(listB, latA, lngA, latB, lngB, agenciesB);
+
+    //merge by gid and sort by sum
+
+    agencies = agenciesA.concat(agenciesB.filter(function(item){
+      return -1 == agenciesA.findIndex(function(element){
+        return element.gid == item.gid;
+      });
+    }));
+
+
     let sorted_agencies = agencies.sort((a1, a2) => a1.sum-a2.sum);
     let ret = [];
     for(let i in sorted_agencies) {
@@ -36,6 +37,23 @@ export class AgencyService {
       ret.push(currAgency);
     }
   	return ret;
+  }
+
+  getResult(list, latA, lngA, latB, lngB, arr) {
+    for(let point of list.results) {
+      let currLat = point.geometry.location.lat;
+      let currLng = point.geometry.location.lng;
+      let distA = this.getDistance(currLat, currLng, latA, lngA);
+      let distB = this.getDistance(currLat, currLng, latB, lngB);
+      arr.push({
+        name: point.name,
+        distanceA: distA,
+        distanceB: distB,
+        sum: (distA+distB),
+        gid: point.id,
+        vic: point.vicinity
+      });
+    }
   }
 
   getDistance(lat1, lng1, lat2, lng2) {

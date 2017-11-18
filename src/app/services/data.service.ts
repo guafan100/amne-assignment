@@ -13,19 +13,29 @@ export class DataService {
   requestUrl: string = "https://maps.googleapis.com/maps"+
   "/api/place/nearbysearch/json?radius=16093&type=real_estate_agency&key=AIzaSyBwyhyXYztX3BZsVpqmGIYMcIOak-x5-js&location=";
 
-  cityUrl: string = 'https://maps.googleapis.com/maps/api/geocode/json?components=country:US|administrative_area:NY|locality:Brooklyn&key=AIzaSyBwyhyXYztX3BZsVpqmGIYMcIOak-x5-js&address=Brooklyn';
-
   constructor(private processhttpservice: ProcesshttpService,
   		private http: Http) { }
 
   getLoc(url) {
-	return this.http.get(this.geoUrl+url)
-		.map(res => { return this.processhttpservice.extractData(res);});
+  	return this.http.get(this.geoUrl+url)
+  		.map(res => { return this.processhttpservice.extractData(res);});
   }
 
   getAgencies(loc) {
+    console.log(this.requestUrl+loc.lat+","+loc.lng);
   	return this.http.get(this.requestUrl+loc.lat+","+loc.lng)
-  		.map(res => { return this.processhttpservice.extractData(res)});
+  		.map(res => { return this.extractData(res)});
+  }
+
+  getFollowAgencies(loc, token) {
+    console.log((this.requestUrl+loc.lat+","+loc.lng+"&pagetoken="+token));
+    return this.http.get(this.requestUrl+loc.lat+","+loc.lng+"&pagetoken="+token)
+      .map(res => { return this.extractData(res)});
+  }
+
+  extractData(res: Response) {
+    let body = res.json();
+    return body || { };
   }
 
 }

@@ -6,9 +6,8 @@ import { HttpModule } from '@angular/http';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule, MatFormFieldModule,
-  MatInputModule, MatRadioModule,
-  MatListModule, MatGridListModule,
-  MatDialogModule } from '@angular/material';
+  MatInputModule, MatToolbarModule,
+  MatTableModule, MatDialogModule} from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AgmCoreModule } from '@agm/core';
 
@@ -19,24 +18,25 @@ import { HeaderComponent } from './header/header.component';
 import { MapComponent } from './map/map.component';
 
 import { ProcesshttpService } from './services/processhttp.service';
-
 import { DataService } from './services/data.service';
+import { AgencyService } from './services/agency.service';
+import { DialogComponent } from './dialog/dialog.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    MapComponent
+    MapComponent,
+    DialogComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     HttpModule,
     MatButtonModule, MatFormFieldModule,
-      MatInputModule, MatRadioModule,
-      MatListModule, MatGridListModule,
-      MatDialogModule,
+      MatInputModule, MatToolbarModule,
+      MatTableModule, MatDialogModule,
     FlexLayoutModule,
     CommonModule,
     FormsModule,
@@ -47,7 +47,11 @@ import { DataService } from './services/data.service';
   ],
   providers: [
     ProcesshttpService,
-    DataService
+    DataService,
+    AgencyService
+  ],
+  entryComponents: [
+    DialogComponent
   ],
   bootstrap: [AppComponent]
 })

@@ -1,16 +1,10 @@
 <div class="container-fluid input">
   <div fxLayout="column">
-  	<div fxFlex >
-      <button mat-icon-button class="mat-primary">Careful</button>
-      <button mat-fab >Careful</button>
-    </div>
-
-    <div fxFlex fxLayout="row" fxLayoutGap="10px" fxLayoutAlign.gt-md="space-around">
+    <div fxFlex fxLayout="row" fxLayoutGap="50px" fxLayoutAlign.gt-md="space-around">
       <div fxFlex="5">
       </div>
       <div fxFlex >
         <h3>Panel</h3>
-        <p>{{addrForm.value | json}}{{ addrForm.status | json }}</p>
         <form novalidate [formGroup]="addrForm" (ngSubmit)="onSubmit()" >
         	<mat-input-container class="half-width" 
             dividerColor="{{formErrors.addrA ? 'warn' : 'primary'}}">
@@ -40,18 +34,14 @@
   	  <div fxFlex="70" >
   	  	<h3>Result<button mat-mini-fab class="text-floral-white button-for-badge" [disabled]="true">12</button></h3>
 
-
-	  </div>
+        <div *ngIf="agencies">
+          This is a test
+        </div>
+        
+	    </div>
     </div>
 
   </div>
 
 </div>
 
-
-
-<!--         <div class="row">
-          <div class="col-md-12">
-            <ShowAlert alert={this.state.alert}/>
-          </div>
-        </div> -->

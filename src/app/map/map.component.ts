@@ -87,23 +87,6 @@ export class MapComponent implements OnInit {
     }
   }
 
-  helper(data, dataA, listA) {
-    if(!data || !data.next_page_token) return;
-    else {
-       let tmpdata;
-       console.log(data);
-       this.dataservice.getFollowAgencies(dataA, data.next_page_token)
-        .subscribe(data => {
-          listA.push(data); 
-          if(data.next_page_token) {
-            this.dataservice.getFollowAgencies(dataA, data.next_page_token)
-              .subscribe(data => {
-                listA.push(data);
-              });          
-          }
-        });       
-    }
-  }
 
   onSubmit() {
     let finishedA = false;
@@ -113,38 +96,33 @@ export class MapComponent implements OnInit {
   	let addressB = this.addrForm.value.addrB;
     let listA = [];
     let listB = [];
-    let dataA;
-    let dataB;
+
   	//use observable to get the location of the two input addresses
 
     this.dataservice.getLoc(addressA)
-      .subscribe(data => {if(data.status === 'OK'){
-        dataA = data.results[0].geometry.location;  
+      .subscribe(data => { if(data.status === 'OK' ) {    
+        let dataA = data.results[0].geometry.location;
+        console.log(dataA);
+        this.dataservice.getLoc(addressB)
+        .subscribe(data => { if(data.status === 'OK') {
+          let dataB = data.results[0].geometry.location;
+          console.log(dataB);
 
-        this.dataservice.getAgencies(dataA)
-          .subscribe(data => {
-            console.log(dataA);
-            listA.push(data);
-            this.helper(data, dataA, listA);
-          });
+          this.dataservice.getAgencies(dataA)
+            .subscribe(data => { 
 
-        }else {this.isValidAddr=false;}});
+            let listA = data;
 
-//    this.dataservice.getLoc(addressB)
-//      .subscribe(data => {if(data.status === 'OK'){
-//        dataB = data.results[0].geometry.location;  
+            this.dataservice.getAgencies(dataB)
+              .subscribe(data => {
+                let listB = data;
+                this.agencies = this.agencyservice.getAgencies(listA, listB, dataA, dataB);
+                this.dataSource = new MatTableDataSource(this.agencies);
+              });
 
-//        this.dataservice.getAgencies(dataB)
-//          .subscribe(data => {
-//            console.log(dataB);
-//            listA.push(data);
-//            this.helper(data, dataB, listB);
-//          });
-
-//        }else {this.isValidAddr=false;}});
-
-
-    setTimeout(function(){console.log(listA)}, 3000);
+          }); 
+        }else {this.isValidAddr = false;}});
+      }else {this.isValidAddr = false;}});
 
 
 
@@ -157,13 +135,6 @@ export class MapComponent implements OnInit {
   		addrB: ''
   	});
 	
-  }
-  function(listA, listB){
-    console.log(listA);
-    //console.log(listB);    
-    if(!this.isValidAddr) {
-      this.openDialog();
-    }
   }
 
   openDialog() {

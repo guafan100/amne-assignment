@@ -22,7 +22,6 @@ export class DataService {
   }
 
   getAgencies(loc) {
-    console.log(this.requestUrl+loc.lat+","+loc.lng);
   	return this.http.get(this.requestUrl+loc.lat+","+loc.lng)
   		.map(res => { return this.extractData(res)});
   }

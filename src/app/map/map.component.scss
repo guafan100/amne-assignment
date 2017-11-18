@@ -39,11 +39,15 @@ mat-hint {
     font-family: "Comic Sans MS", serif;
 }
 
-.function table{
-    text-align: center;
+.example-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 500px;
+  min-width: 300px;
 }
 
-.function #MyMap {
-    margin-top: 20px;
+.mat-table {
+  overflow: auto;
+  max-height: 500px;
 }
 

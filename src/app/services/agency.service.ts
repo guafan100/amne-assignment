@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Agency } from '../shared/agency';
 
 @Injectable()
 export class AgencyService {
 
   constructor() { }
 
-  getAgencies(data, locA, locB): Agency[] {
-  	var agencies: Agency[] = [];
+  getAgencies(data, locA, locB){
+  	var agencies = [];
 
   	console.log("test: "+ this.getDistance(38.898556, -77.037852, 38.897147, -77.043934));
 
@@ -22,14 +21,21 @@ export class AgencyService {
   		if(distB < 10) {
   			let distA = this.getDistance(currLat, currLng, latA, lngA);
   			agencies.push({
-  				name: point.name;
-  				distanceA: distA;
-  				distanceB: distB;
-  				sum: (distA+distB);
+  				name: point.name,
+  				distanceA: distA,
+  				distanceB: distB,
+  				sum: (distA+distB)
   			});
   		}
   	}
-  	return agencies.sort((a1, a2) => a1.sum-a2.sum);
+    let sorted_agencies = agencies.sort((a1, a2) => a1.sum-a2.sum);
+    let ret = [];
+    for(let i in sorted_agencies) {
+      let currAgency = sorted_agencies[i];
+      currAgency.id = (Number(i)+1);
+      ret.push(currAgency);
+    }
+  	return ret;
   }
 
   getDistance(lat1, lng1, lat2, lng2) {

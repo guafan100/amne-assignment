@@ -1,9 +1,11 @@
-<div class="container-fluid input">
+<div class="container-fluid input mat-elevation-z8">
+
   <div fxLayout="column">
     <div fxFlex fxLayout="row" fxLayoutGap="50px" fxLayoutAlign.gt-md="space-around">
-      <div fxFlex="5">
+      <div fxFlex>
       </div>
       <div fxFlex >
+
         <h3>Panel</h3>
         <form novalidate [formGroup]="addrForm" (ngSubmit)="onSubmit()" >
         	<mat-input-container class="half-width" 
@@ -30,14 +32,56 @@
         <agm-map [latitude]="lat" [longitude]="lng">
   			 <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
 		    </agm-map>
-  	  </div>
-  	  <div fxFlex="70" >
-  	  	<h3>Result<button mat-mini-fab class="text-floral-white button-for-badge" [disabled]="true">12</button></h3>
 
-        <div *ngIf="agencies">
-          This is a test
+
+  	  </div>
+
+  	  <div fxFlex="70" >
+  	  	<h3>Result
+          <a *ngIf="agencies"><button mat-mini-fab class="text-floral-white button-for-badge" [disabled]="true">{{agencies.length}}</button></a>
+        </h3>
+
+        <div *ngIf="dataSource">
+
+          <div class="example-container mat-elevation-z8">
+            <mat-table #table [dataSource]="dataSource">
+
+              <!-- Position Column -->
+              <ng-container matColumnDef="id">
+                <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+              </ng-container>
+
+              <!-- Name Column -->
+              <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+              </ng-container>
+
+              <!-- Weight Column -->
+              <ng-container matColumnDef="distanceA">
+                <mat-header-cell *matHeaderCellDef> DistanceA(miles) </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.distanceA.toFixed(3)}} </mat-cell>
+              </ng-container>
+
+              <!-- Color Column -->
+              <ng-container matColumnDef="distanceB">
+                <mat-header-cell *matHeaderCellDef> DistanceB(miles) </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.distanceB.toFixed(3)}} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="sum">
+                <mat-header-cell *matHeaderCellDef> Sum(miles) </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.sum.toFixed(3)}} </mat-cell>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+          </div>
+
         </div>
-        
+
 	    </div>
     </div>
 
